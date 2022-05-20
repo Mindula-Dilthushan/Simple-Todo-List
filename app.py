@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
+import enum
 import os
 
 app = Flask(__name__)
@@ -12,8 +13,23 @@ database = SQLAlchemy(app)
 
 
 class User(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
+    user_id = database.Column(database.Integer, primary_key=True)
     username = database.Column(database.String(100), unique=True, nullable=False)
+    tasks = database.relationship("Task", backref="user", lazy=True)
+
+
+class TaskStatus(enum.Enum):
+    COMPLETED = "Completed"
+    CLOSED = "Closed"
+    OPENED = "Opened"
+
+
+class Task(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    task = database.Column(database.String(250), nullable=False)
+    status = database.Column(database.Enum(TaskStatus), default=TaskStatus.OPENED)
+    # user_id = database.Column(database.Integer, database.ForeignKey("user_id"), nullable=False)
+
 
 database.create_all()
 
