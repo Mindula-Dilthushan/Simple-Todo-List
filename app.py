@@ -50,16 +50,23 @@ def logout():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        session["username"] = request.form["username"]
+        username = request.form["username"]
+
+        user = User(username=username)
+        database.session.add(user)
+        database.session.commit()
+        print(user.user_id)
+        session["username"] = username
+
         return redirect("/tasks")
 
     return render_template("login.html")
 
 
-@app.route("/task")
+@app.route("/tasks")
 def task():
-    login_user = session["username"]
-    return render_template("task.html", username=login_user)
+    # login_user = session["username"]
+    return render_template("task.html")
 
 
 if __name__ == "__main__":
