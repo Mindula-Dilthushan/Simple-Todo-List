@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, session
-from flask_sqlalchemy import SQLAlchemy
 import enum
 import os
+
+from flask import Flask, render_template, request, redirect, session
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = "alpha"
@@ -25,10 +26,10 @@ class TaskStatus(enum.Enum):
 
 
 class Task(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
+    task_id = database.Column(database.Integer, primary_key=True)
     task = database.Column(database.String(250), nullable=False)
     status = database.Column(database.Enum(TaskStatus), default=TaskStatus.OPENED)
-    # user_id = database.Column(database.Integer, database.ForeignKey("user_id"), nullable=False)
+    user_id = database.Column(database.Integer, database.ForeignKey("user.user_id"), nullable=False)
 
 
 database.create_all()
